@@ -35,11 +35,29 @@ router.post('/find-midpoint', async (req, res) => {
     }
 
     const r3 = await google.geocode(process.env.PLACES_URL, params=params3)
+    let filteredResults = []
+    for (const result of r3.results) {
+      const businessStatus = result.business_status
+      const location = result.geometry.location
+      const name = result.name
+      const openingHours = result.opening_hours
+      const placeId = result.place_id
+      const types = result.types
+      const address = result.vicinity
+      filteredResults.push({
+        businessStatus,
+        location,
+        name,
+        openingHours,
+        placeId,
+        types,
+        address
+      })
+    }
 
     res.json({
       "midpoint": midpoint,
-      "status": r3.status,
-      "results": r3.results
+      "results": filteredResults
     })
   } catch (err) {
     console.error(`Error while getting midpoint: ${err.message}`)
